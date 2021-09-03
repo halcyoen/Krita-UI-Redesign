@@ -30,8 +30,9 @@ class ntToolOptions():
         # Create "pad"
         self.pad = ntWidgetPad(mdiArea)
         self.pad.setObjectName("toolOptionsPad")
-        self.pad.setViewAlignment('right')
         self.pad.borrowDocker(toolOptions)
+        self.pad.setViewAlignment('right')
+        self.pad.loadVisible()
 
         # Create and install event filter
         self.adjustFilter = ntAdjustToSubwindowFilter(mdiArea)
@@ -41,9 +42,9 @@ class ntToolOptions():
 
         # Create visibility toggle action 
         action = window.createAction("showToolOptions", "Show Tool Options", "settings")
-        action.toggled.connect(self.pad.toggleWidgetVisible)
         action.setCheckable(True)
-        action.setChecked(True)
+        action.setChecked(self.pad.wasVisible())
+        action.toggled.connect(self.pad.toggleWidgetVisible)
 
         # Disable the related QDockWidget
         self.dockerAction = window.qwindow().findChild(QDockWidget, "sharedtooldocker").toggleViewAction()
@@ -56,7 +57,6 @@ class ntToolOptions():
             subWin.installEventFilter(self.adjustFilter)
             self.pad.adjustToView()
             self.updateStyleSheet()
-    
 
     def findDockerAction(self, window, text):
         dockerMenu = None
@@ -71,12 +71,11 @@ class ntToolOptions():
                 
         return False
 
-
     def updateStyleSheet(self):
         #variables.setColors()
         #self.pad.setStyleSheet(variables.nu_tool_options_style)
         return
-    
+
     def close(self):
         self.dockerAction.setEnabled(True)
         return self.pad.close()
