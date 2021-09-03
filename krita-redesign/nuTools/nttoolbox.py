@@ -32,6 +32,7 @@ class ntToolBox():
         self.pad.setObjectName("toolBoxPad")
         self.pad.borrowDocker(toolbox)
         self.pad.setViewAlignment('left')
+        self.pad.loadVisible()
         
         # Create and install event filter
         self.adjustFilter = ntAdjustToSubwindowFilter(mdiArea)
@@ -41,13 +42,14 @@ class ntToolBox():
 
         # Create visibility toggle action
         action = window.createAction("showToolbox", "Show Toolbox", "settings")
-        action.toggled.connect(self.pad.toggleWidgetVisible)
         action.setCheckable(True)
-        action.setChecked(True)
+        action.setChecked(self.pad.wasVisible())
+        action.toggled.connect(self.pad.toggleWidgetVisible)
 
         # Disable the related QDockWidget
         self.dockerAction = window.qwindow().findChild(QDockWidget, "ToolBox").toggleViewAction()
         self.dockerAction.setEnabled(False)
+
 
     def ensureFilterIsInstalled(self, subWin):
         """Ensure that the current SubWindow has the filter installed,
@@ -56,6 +58,7 @@ class ntToolBox():
             subWin.installEventFilter(self.adjustFilter)
             self.pad.adjustToView()
             self.updateStyleSheet()
+
 
     def findDockerAction(self, window, text):
         dockerMenu = None
@@ -70,8 +73,10 @@ class ntToolBox():
                 
         return False
 
+
     def updateStyleSheet(self):
         self.pad.setStyleSheet(variables.nu_toolbox_style)
+
 
     def close(self):
         self.dockerAction.setEnabled(True)
