@@ -50,7 +50,6 @@ class ntToolBox():
         self.dockerAction = window.qwindow().findChild(QDockWidget, "ToolBox").toggleViewAction()
         self.dockerAction.setEnabled(False)
 
-
     def ensureFilterIsInstalled(self, subWin):
         """Ensure that the current SubWindow has the filter installed,
         and immediately move the Toolbox to current View."""
@@ -58,7 +57,6 @@ class ntToolBox():
             subWin.installEventFilter(self.adjustFilter)
             self.pad.adjustToView()
             self.updateStyleSheet()
-
 
     def findDockerAction(self, window, text):
         dockerMenu = None
@@ -73,10 +71,8 @@ class ntToolBox():
                 
         return False
 
-
     def updateStyleSheet(self):
         self.pad.setStyleSheet(variables.nu_toolbox_style)
-
 
     def close(self):
         self.dockerAction.setEnabled(True)
