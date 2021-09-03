@@ -20,7 +20,6 @@ from PyQt5.QtWidgets import QWidget, QToolButton, QDockWidget, QVBoxLayout, QSiz
 from PyQt5.QtCore import Qt, QSize, QPoint
 from .ntscrollareacontainer import ntScrollAreaContainer
 from .nttogglevisiblebutton import ntToggleVisibleButton
-from krita import Krita
 
 class ntWidgetPad(QWidget):
     """
@@ -42,10 +41,11 @@ class ntWidgetPad(QWidget):
         self.widget = None
         self.widgetDocker = None
 
-         # Visibility toggle
+        # Visibility toggle
         self.btnHide = ntToggleVisibleButton()
         self.btnHide.clicked.connect(self.toggleWidgetVisible)
         self.layout().addWidget(self.btnHide)
+
 
     def activeView(self):
         """
@@ -192,12 +192,13 @@ class ntWidgetPad(QWidget):
 
 
     def toggleWidgetVisible(self, value=None):
-        if not value:
+        if value is None:
             value = not self.widget.isVisible()
         
         self.widget.setVisible(value)
         self.adjustToView()  
         self.updateHideButtonIcon(value)
+        self.saveVisible(value)
 
 
     def updateHideButtonIcon(self, isVisible): 
@@ -214,5 +215,22 @@ class ntWidgetPad(QWidget):
             else:
                 self.btnHide.setArrowType(Qt.ArrowType.LeftArrow)
 
-    def getViewAlignment(self):
+    def loadVisible(self):
+        """load visibility from previous krita session"""
+        self.toggleWidgetVisible(self.wasVisible())
+
+    def saveVisible(self, value):
+        """save visibility between krita sessions"""
+        visibility = str(value).lower()
+        Application.instance().writeSetting("Redesign", self.objectName()+"Visible", visibility)
+
+    def wasVisible(self):
+        """return last saved state of visibility"""
+        lastState = Application.readSetting("Redesign", self.objectName()+"Visible", "true")
+        if lastState == "true":
+            return True
+
+        return False
+
+    def viewAlignment(self):
         return self.alignment
