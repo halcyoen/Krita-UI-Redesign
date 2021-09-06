@@ -190,16 +190,14 @@ class ntWidgetPad(QWidget):
     
         return False
 
+    def toggleWidgetVisible(self):
+        self.setWidgetVisible(not self.widget.isVisible())
 
-    def toggleWidgetVisible(self, value=None):
-        if value is None:
-            value = not self.widget.isVisible()
-        
+    def setWidgetVisible(self, value=True):
         self.widget.setVisible(value)
         self.adjustToView()  
         self.updateHideButtonIcon(value)
         self.saveVisible(value)
-
 
     def updateHideButtonIcon(self, isVisible): 
         """
